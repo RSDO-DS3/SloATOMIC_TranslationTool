@@ -1,0 +1,47 @@
+{% extends "layout.twig" %}
+{% block body %}
+    <h2>Registracija trenutno onemogočena</h2>
+    <div class="container p-4">
+        <div>
+            <p>{{ message }}</p>
+        </div>
+        <div class="register-user">
+            <form action="/User/createUser">
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="name" placeholder="">
+                    <label for="name">Vaše polno ime</label>
+                </div>
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="username" placeholder="">
+                    <label for="name">Poljubno uporabniško ime</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" class="form-control" name="email" placeholder="">
+                    <label for="email">Email</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="">
+                    <label for="floatingPassword">Geslo</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" name="repeatPassword" class="form-control" id="floatingPassword2"
+                           placeholder="">
+                    <label for="floatingPassword2">Ponovi geslo</label>
+                </div>
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="organisation" placeholder="">
+                    <label for="name">Organizacija</label>
+                </div>
+                <button id="Register-button" class="w-100 btn btn-lg btn-primary" type="submit" disabled="disabled">
+                    Registriraj me
+                </button>
+                <a class="w-100 btn btn-lg btn-info mt-2" href="/login">Prijava (že imam račun)</a>
+            </form>
+        </div>
+        <p class="mt-5 mb-3 text-muted w-100 text-center ">&copy; 2017–2022</p>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script src="/js/index.js"></script>
+{% endblock %}

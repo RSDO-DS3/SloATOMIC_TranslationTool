@@ -1,0 +1,196 @@
+{% extends "layout.twig" %}
+{% block body %}
+    <div class="mt-3">
+        <h3>Dodaj novega uporabnika</h3>
+    </div>
+    <div class="mt-3">
+    <div class="p-4 admin-make-user">
+        <form action="/User/createUser">
+            <input type="text" class="d-none" name="adminCreate" value="true">
+            <div class="form-group row">
+                <label for="username" class="col-sm-2 col-form-label">Uporabniško ime</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="username">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="name" class="col-sm-2 col-form-label">Polno ime</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="name">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" name="email">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="organisation" class="col-sm-2 col-form-label">Organizacija</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="organisation">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password" class="col-sm-2 col-form-label">Geslo</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" name="password">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="numberOfRecordsToGive" class="col-sm-2 col-form-label">#Recordov za uredit</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" name="numberOfRecordsToGive">
+                </div>
+            </div>
+            <button type="submit" id="Admin-create-user" class="btn btn-secondary" disabled="disabled">Ustvari</button>
+        </form>
+    </div>
+    <div class="mt-3 d-flex">
+        <h3>Obstoječi uporabniki</h3>
+        <form action="/User/updateUsersProgresses" method="POST">
+            <button type="submit" id="manage_users_prog_update" class="btn btn-outline-secondary ms-3">Posodobi progresse</button>
+        </form>
+    </div>
+    <div class="accordion mt-3" id="accordion">
+        {% for user in users %}
+            <div class="user-parent accordion-item">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ loop.index }}" aria-expanded="true"
+                            aria-controls="collapse{{ loop.index }}">
+                        <div class="accord-bar w-100 d-flex flex-md-row gap-3 justify-content-start">
+                            <div>
+                                <strong>Uporabnik:</strong>
+                                <kbd>{{ user.username }}</kbd>
+                                {% if user.admin %}
+                                    <em>(admin)</em>
+                                {% endif %}
+                                -
+                                <strong>Email:</strong>
+                                <kbd>{{ user.email }}</kbd>
+                            </div>
+
+                            <div>
+                                <strong>Ime:</strong>
+                                <kbd>{{ user.name }}</kbd>
+                            </div>
+
+                            <div>
+                                <strong>Organizacija:</strong>
+                                <kbd>{{ user.organisation }}</kbd>
+                            </div>
+
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{ loop.index }}" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        <form action="/User/editUser" method="POST" class="setupping">
+                            <input type="text" class="d-none" name="userId" value="{{ user._id }}">
+                            <input type="text" class="d-none" name="alsoGiveMore" value="false">
+                            <h6><strong>Urejanje uporabnika {{ user.username }}</strong></h6>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Uporabniško ime</span>
+                                <input type="text" name="username" class="form-control" aria-label=""
+                                       aria-describedby="inputGroup-sizing-sm"
+                                       value="{{ user.username }}">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Ime</span>
+                                <input type="text" name="name" class="form-control" aria-label=""
+                                       aria-describedby="inputGroup-sizing-sm"
+                                       value="{{ user.name }}">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+                                <input type="text" name="email" class="form-control" aria-label=""
+                                       aria-describedby="inputGroup-sizing-sm"
+                                       value="{{ user.email }}">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Organizacija</span>
+                                <input type="text" name="organisation" class="form-control" aria-label=""
+                                       aria-describedby="inputGroup-sizing-sm"
+                                       value="{{ user.organisation }}">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Dodeli novo geslo</span>
+                                <input type="password" name="newpassword" class="form-control" aria-label=""
+                                       aria-describedby="inputGroup-sizing-sm"
+                                       value="">
+                            </div>
+                            {% if user.numRecordsAssigned is defined %}
+                                <h6><strong>Translations check progress (refresh page for up to date values)</strong>
+                                </h6>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text"
+                                          id="inputGroup-sizing-sm">Dev: {{ user.numRecordsAssigned[0] }} /</span>
+                                    <input type="number" name="devAssigned" class="form-control"
+                                           aria-label="{{ user.numRecordsAssigned[1] }}"
+                                           aria-describedby="inputGroup-sizing-sm"
+                                           value="{{ user.numRecordsAssigned[1] }}">
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text"
+                                          id="inputGroup-sizing-sm">Train: {{ user.numRecordsAssigned[2] }} /</span>
+                                    <input type="number" name="trainAssigned" class="form-control"
+                                           aria-label="{{ user.numRecordsAssigned[3] }}"
+                                           aria-describedby="inputGroup-sizing-sm"
+                                           value="{{ user.numRecordsAssigned[3] }}">
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text"
+                                          id="inputGroup-sizing-sm">Test: {{ user.numRecordsAssigned[4] }} /</span>
+                                    <input type="number" name="testAssigned" class="form-control"
+                                           aria-label="{{ user.numRecordsAssigned[5] }}"
+                                           aria-describedby="inputGroup-sizing-sm"
+                                           value="{{ user.numRecordsAssigned[5] }}">
+                                </div>
+                            {% endif %}
+                            <div>
+                                <button type="submit" class="btn btn-secondary mt-2">
+                                    <i class='bx bxs-save'></i> Posodobi
+                                </button>
+                                <div class="alert alert-success savesuccessmodal hideable hide">
+                                    <i class='bx bx-check'></i> Uporabnik je bil posodobljen!
+                                </div>
+                            </div>
+                        </form>
+                        {% if user.numRecordsAssigned is defined %}
+                            <form action="/User/removeRecords" method="POST" class="mt-2">
+                                <div class="d-flex align-items-center">
+                                    <input type="text" class="d-none" name="userId" value="{{ user._id }}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="odstraniRecordeChk"
+                                               value="true"
+                                               id="odstraniRecorde{{ loop.index }}">
+                                        <label class="form-check-label me-2" for="odstraniRecorde{{ loop.index }}">Sem
+                                            prepričan</label>
+                                    </div>
+                                    <button class="btn b btn-outline-warning ml-2" type="submit">Oddeli vse recorde
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                        <form action="/User/deleteUser" method="POST" class="mt-2">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="d-none" name="userId" value="{{ user._id }}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="odstraniUporabnikaChk"
+                                           value="true"
+                                           id="odstraniUporabnika{{ loop.index }}">
+                                    <label class="form-check-label me-2" for="odstraniUporabnika{{ loop.index }}">Sem
+                                        prepričan</label>
+                                </div>
+                                <button class="btn b btn-outline-danger" type="submit">Odstrani uporabnika</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

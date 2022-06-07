@@ -1,0 +1,10 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+    <div class="w-100 h-100 d-flex align-center flex-column pt-5">
+        <h4>Napaka: {{ message }}</h4>
+        <h2>{{ error.status }}</h2>
+        <pre>{{ error.stack }}</pre>
+    </div>
+
+{% endblock %}

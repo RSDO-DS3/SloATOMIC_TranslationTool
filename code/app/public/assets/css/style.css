@@ -1,0 +1,13 @@
+.editblockmeta {
+    cursor: pointer;
+}
+
+.editblockcontent {
+    height:0px; 
+    overflow: hidden;
+    transition: all 400ms ease-in;
+}
+
+.editblockcontent.active {
+    height: 150px;
+}

@@ -1,0 +1,260 @@
+<header>
+    <div class="topbar d-flex align-items-center">
+        <nav class="navbar navbar-expand">
+            <a class="topbar-logo-header" href="/">
+                <div class="">
+                    <img src="/assets/images/rsdologo.svg" style="width: 120px;" class="logo-icon" alt="logo icon">
+                </div>
+                <div class="">
+                    <h4 class="logo-text">
+                        orodje za prevajanje</h4>
+                </div>
+            </a>
+            {% if user %}
+                <div class="mobile-toggle-menu">
+                    <i class='bx bx-menu'></i>
+                </div>
+                <div class="search-bar flex-grow-1" id="search-bar-box">
+                    <div class="position-relative form-control-sm search-bar-box">
+                        <form id="search-form" class="d-flex form-inline"
+                              action="/Record/editFile?page={{ page }}{{ queryparamsurl }}">
+                            <input class="form-control search-control" id="main-search-input" type="text"
+                                   placeholder="Iskanje..."
+                                   aria-label="Iskanje">
+
+                            <input class="form-control search-control hidden" id="orighead-search-input" type="text"
+                                   placeholder="orighead... (EN)"
+                                   aria-label="Iskanje">
+                            <input class="form-control search-control hidden" id="origtail-search-input" type="text"
+                                   placeholder="origtail... (EN)"
+                                   aria-label="Iskanje">
+                            <input class="form-control search-control hidden" id="head-search-input" type="text"
+                                   placeholder="head... (SLO)"
+                                   aria-label="Iskanje">
+                            <input class="form-control search-control hidden" id="tail-search-input" type="text"
+                                   placeholder="tail... (SLO)"
+                                   aria-label="Iskanje">
+                            <input class="form-control search-control hidden" id="edge-search-input" type="text"
+                                   placeholder="edge... (Relacija)"
+                                   aria-label="Iskanje">
+
+                            <button class="btn btn-secondary" type="submit">
+                                <i class="bx bx-search"></i>
+                            </button>
+                            <a class="btn btn-sm pl-2" id="advanced-search-toggle">
+                                <i class="bx bx-cog"></i>
+                                <span>Napredno iskanje</span>
+                            </a>
+                        </form>
+                        {#                        <input type="text" id="main-search-bar" class="form-control search-control" placeholder="Iskanje..."> #}
+                        {#                        <button class="btn btn-sm btn-secondary">Išči</button> #}
+                        {#                    <span class="position-absolute top-50 search-show translate-middle-y"> #}
+                        {#                        <i class='bx bx-search'></i> #}
+                        {#                    </span> #}
+                        {#                    <span class="position-absolute top-50 search-close translate-middle-y"> #}
+                        {#                        <i class='bx bx-x'></i> #}
+                        {#                    </span> #}
+                    </div>
+                </div>
+                <div class="top-menu ms-auto">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item mobile-search-icon">
+                            <a class="nav-link" href="#">
+                                <i class='bx bx-search'></i>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown dropdown-large">
+                            {#                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" #}
+                            {#                           role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
+                            {#                            <span class="alert-count">1</span> #}
+                            {#                            <i class='bx bx-bell'></i> #}
+                            {#                        </a> #}
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a href="javascript:;">
+                                    <div class="msg-header">
+                                        <p class="msg-header-title">Obvestila</p>
+                                        <p class="msg-header-clear ms-auto">Označi vse kot prebrano</p>
+                                    </div>
+                                </a>
+                                <div class="header-notifications-list">
+                                    <a class="dropdown-item" href="javascript:;">
+                                        <div class="d-flex align-items-center">
+                                            <div class="notify bg-light-primary text-primary">
+                                                <i class="bx bx-group"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="msg-name">Nova revizija<span class="msg-time float-end">pred 14
+																																																																																																	sekund</span>
+                                                </h6>
+                                                <p class="msg-info">Uporabnik 2 je dodal revizijo</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <a href="javascript:;">
+                                    <div class="text-center msg-footer">View All Notifications</div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="user-box dropdown">
+                    <a
+                            class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <!--<img src="/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->
+                        <div class="avatar">
+                            {{ user.initials }}
+                        </div>
+                        <div class="user-info ps-3">
+                            <p class="user-name mb-0">{{ user.name }}</p>
+                            <p class="designattion mb-0">{{ user.organisation }}</p>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="/User/editUser">
+                                <i class="bx bx-user"></i>
+                                <span>Moj uporabniški račun</span>
+                            </a>
+                        </li>
+                        {% if user.admin %}
+                            <li>
+                                <a class="dropdown-item" href="/manageUsers">
+                                    <i class="bx bxs-user-account"></i>
+                                    <span>Urejaj uporabnike (admin only)</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <div class="dropdown-divider mb-0"></div>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/logout">
+                                <i class='bx bx-log-out-circle'></i>
+                                <span>Odjava</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+<!--end header -->
+<!--navigation-->
+{# <div class="nav-container"> #}
+{#    <div class="mobile-topbar-header"> #}
+{#        <div> #}
+{#            <img src="/assets/images/rsdologo.svg" class="logo-icon" alt="logo icon" style="width:100px;"> #}
+{#        </div> #}
+{#        <div> #}
+{#            <h4 class="logo-text"></h4> #}
+{#        </div> #}
+{#        <div class="toggle-icon ms-auto"> #}
+{#            <i class='bx bx-arrow-to-left'></i> #}
+{#        </div> #}
+{#    </div> #}
+{#    <nav class="topbar-nav"> #}
+{#        <ul class="metismenu" id="menu"> #}
+{#            <li> #}
+{#                <a href="javascript:;" class="has-arrow"> #}
+{#                    <div class="parent-icon"> #}
+{#                        <i class='bx bx-home-circle'></i> #}
+{#                    </div> #}
+{#                    <div class="menu-title">Izbira datoteke za urejanje</div> #}
+{#                </a> #}
+{#                <ul> #}
+{#                    <li><a href="/Record/editFile?page=1&file=dev.tsv"><i class="bx bx-right-arrow-alt"></i>Urejanje #}
+{#                            dev.tsv</a></li> #}
+{#                    <li><a href="/Record/editFile?page=1&file=train.tsv"><i class="bx bx-right-arrow-alt"></i>Urejanje #}
+{#                            train.tsv</a></li> #}
+{#                    <li><a href="/Record/editFile?page=1&file=test.tsv"><i class="bx bx-right-arrow-alt"></i>Urejanje #}
+{#                            test.tsv</a></li> #}
+{#                </ul> #}
+{#            </li> #}
+{#        </ul> #}
+{#    </nav> #}
+{# </div> #}
+{% if user %}
+    <div class="navi-container">
+        <div class="tabs">
+            <input type="radio" id="radio-1" name="tabs" onclick="location.href='/Record/editFile?file=dev.tsv'"
+                   {% if "dev.tsv" in queryparamsurl %}checked{% endif %}/>
+            <label class="tab" for="radio-1">dev.tsv
+                {% if not user.admin %}
+                    {% set totalDev = 100 * user.numRecordsAssigned[0] // user.numRecordsAssigned[1] %}
+                    <span class="progress-pie-color smaller-nav {% if totalDev == 100 %}smaller-nav-100{% endif %}"
+                          data-value="{{ totalDev }}"></span>
+                {% endif %}
+            </label>
+            <input type="radio" id="radio-2" name="tabs" onclick="location.href='/Record/editFile?file=train.tsv'"
+                   {% if "train.tsv" in queryparamsurl %}checked{% endif %}/>
+            <label class="tab" for="radio-2">train.tsv
+                {% if not user.admin %}
+                    {% set totalTrain = 100 * user.numRecordsAssigned[2] // user.numRecordsAssigned[3] %}
+                    <span class="progress-pie-color smaller-nav {% if totalTrain == 100 %}smaller-nav-100{% endif %}"
+                          data-value="{{ totalTrain }}"></span>
+                {% endif %}
+            </label>
+            <input type="radio" id="radio-3" name="tabs" onclick="location.href='/Record/editFile?file=test.tsv'"
+                   {% if "test.tsv" in queryparamsurl %}checked{% endif %}/>
+            <label class="tab" for="radio-3">test.tsv
+                {% if not user.admin %}
+                    {% set totalTest = 100 * user.numRecordsAssigned[4] // user.numRecordsAssigned[5] %}
+                    <span class="progress-pie-color smaller-nav {% if totalTest == 100 %}smaller-nav-100{% endif %}"
+                          data-value="{{ totalTest }}"></span>
+                {% endif %}
+            </label>
+            <span class="glider"></span>
+        </div>
+        <div class="ms-auto d-flex align-items-center">
+            {% if not user.admin %}
+                {% set totalPercent = 100 * (user.numRecordsAssigned[0]+user.numRecordsAssigned[2]+user.numRecordsAssigned[4]
+                    )//(user.numRecordsAssigned[1]+user.numRecordsAssigned[3]+user.numRecordsAssigned[5]) %}
+{#                {% if totalPercent < 3 %}#}
+{#                    <div class="me-3">Time to start checking these documents.</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 3 and totalPercent < 20 %}#}
+{#                    <div class="me-3">Good job so far!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 20 and totalPercent < 40 %}#}
+{#                    <div class="me-3">Keep going</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 40 and totalPercent < 49 %}#}
+{#                    <div class="me-3">Almost half done!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent == 50 %}#}
+{#                    <div class="me-3">Half done! Half more to go!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 51 and totalPercent < 60 %}#}
+{#                    <div class="me-3">A bit over half done!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 60 and totalPercent < 80 %}#}
+{#                    <div class="me-3">Keep up the good work!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 80 and totalPercent < 95 %}#}
+{#                    <div class="me-3">Not far from being done now.</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 95 and totalPercent < 98 %}#}
+{#                    <div class="me-3">Almost done! Great job, keep up the good work!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent >= 98 and totalPercent < 100 %}#}
+{#                    <div class="me-3">Just a little bit left! Wohooo!</div>#}
+{#                {% endif %}#}
+{#                {% if totalPercent == 100 %}#}
+{#                    <div class="me-3">Done with all assigned documents!</div>#}
+{#                {% endif %}#}
+                <div class="me-3">Stanje pregledovanja (%)</div>
+                <div class="progress-pie-color main-pie"
+                     data-value="{{ totalPercent }}"></div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+<!--end navigation-->
+<!--start page wrapper -->
+{% block scripts %}
+    <script src="/js/index.js"></script>
+{% endblock %}

@@ -1,0 +1,345 @@
+{% extends "layout.twig" %}
+{% block body %}
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Urejanje prevodov</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="/">
+                                <i class="bx bx-home-alt"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Datoteka <strong>{{ file }}</strong></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary">Možnosti</button>
+                    <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
+                        <a class="dropdown-item" href="/Record/exportFile?file={{ file }}&uid={{ user._id }}&self=1">
+                            Izvozi svojo datoteko</a>
+                        {% if user.admin %}
+                            <a class="dropdown-item"
+                               href="/Record/exportFile?file={{ file }}&uid={{ user._id }}&self=0">
+                                Izvozi celotno datoteko (admin)</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Seznam prevodov</h5>
+                <hr/>
+                <nav aria-label="Navigacija" class="mb-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if page == 1 %}disabled{% endif %} ">
+                            <a class="page-link" href="?page={{ page-1 }}{{ queryparamsurl }}"
+                               tabindex="-1">Prejšnja</a>
+                        </li>
+                        <li class="d-flex align-items-center px-3">
+                            Stran {{ page }} od {{ total }}
+                        </li>
+                        <li class="page-item {% if page >= total %}disabled{% endif %}">
+                            <a class="page-link" href="?page={{ page+1 }}{{ queryparamsurl }}">Naslednja</a>
+                        </li>
+                        <li class="d-flex align-items-center px-3">
+                            <a id="jump_to_page" class="page-link" href="?page={{ jumptopage }}{{ queryparamsurl }}">Skoči
+                                na stran</a>
+                            <input class="form-control search-control _w-13" id="jump_to_page_i" type="text"
+                                   placeholder="Stran"
+                                   aria-label="Iskanje">
+                            <a id="num_per_page" class="page-link" href="?page={{ page }}{{ queryparamsurl }}">El.
+                                na strani</a>
+                            <input class="form-control search-control _w-13" id="num_per_page_i" type="text"
+                                   placeholder="El #"
+                                   aria-label="Iskanje">
+                        </li>
+
+                    </ul>
+                    <div class="d-flex">
+                        <div>
+                            <button id="all-disp-ok" class="btn btn-sm btn-outline-info"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Pritisk na ta gumb je enako kot da bi pritisnili na vse OK gumbe v vsaki *prikazani* vrstici (ignorira že obarvane elemente)">
+                                Vsi (neurejeni) prikazani so OK
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#mass-replace-div" aria-expanded="false"
+                                    aria-controls="mass-replace-div">
+                                Napredni urejevalnik
+                            </button>
+                        </div>
+                        <div class="listfilters ms-auto">
+                            <form id="filter-form" action="?page={{ page }}{{ queryparamsurl }}" method="GET">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="unedited" value="true"
+                                           id="nonedited"
+                                           {% if unedited==true %}checked{% endif %}>
+                                    <label class="form-check-label" for="nonedited">Samo neurejeni</label>
+                                </div>
+                                <button class="btn btn-sm btn-secondary">
+                                    Filtriraj
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div id="mass-replace-div" class="collapse">
+                        <form class="mt-2" action="" id="zamenjava-form">
+                            <div><i>*Spremembe bodo izvedene le in na vseh prikazanih neurejenih elementih spodaj.</i>
+                            </div>
+                            <div><i>*Nasvet: Kliknite s sredinskim miškinim gumbom na element, kjer želite popraviti vsa
+                                    ista besedila pod HEAD.</i></div>
+                            <input class="form-control search-control mt-2 w-50" type="text" name="oldHead"
+                                   placeholder="Staro besedilo (HEAD)" aria-label="Menjava texta">
+                            <i class="bx bx-down-arrow-alt h5"></i>
+                            <input class="form-control search-control w-50" type="text" name="newHead"
+                                   placeholder="Staro besedilo (HEAD)" aria-label="Menjava texta">
+
+                            <input class="form-control search-control mt-5 w-50" type="text" name="oldTail"
+                                   placeholder="Staro besedilo (TAIL)" aria-label="Menjava texta">
+                            <i class="bx bx-down-arrow-alt h5"></i>
+                            <input class="form-control search-control w-50" type="text" name="newTail"
+                                   placeholder="Staro besedilo (TAIL)" aria-label="Menjava texta">
+                            <textarea aria-label="" class="form-control w-50 mt-3 search-control" name="comment"
+                                      rows="3"
+                                      placeholder="Komentar... (Neobvezno)"></textarea>
+                            <input aria-label="" class="d-none" name="massEdit" value="1">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="alsoEditEdited" value=""
+                                       id="noneditedMass">
+                                <label class="form-check-label" for="noneditedMass">Izvedi operacijo tudi nad že
+                                    urejenimi</label>
+                            </div>
+                            <button class="btn btn-secondary mt-2" type="submit">
+                                <i class="bx bx-edit"></i>
+                                <span>Izvedi zamenjave</span>
+                            </button>
+                        </form>
+                    </div>
+                </nav>
+                <div class="accordion" id="accordion">
+                    {% for record in records %}
+                        <div class="record-parent accordion-item
+{% if record.edited and (record.head != record.newHead or record.tail != record.newTail) %} edited{% endif %}
+{% if record.edited and (record.head == record.newHead and record.tail == record.newTail) %} edited-was-ok{% endif %}
+{% if record.markedForLater %} marked-for-later{% endif %}"
+                             id="record{{ loop.index }}">
+                            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                <button id="accordBtntc{{ loop.index }}" class="accordion-button collapsed"
+                                        type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ loop.index }}" aria-expanded="true"
+                                        aria-controls="collapse{{ loop.index }}">
+                                    <div class="accord-bar w-100 d-flex flex-md-row gap-3 justify-content-start">
+                                        <div class="overflow-hidden">
+                                            {% if not record.edited %}
+                                                <span>
+                                                    <a id="isokbtn{{ loop.index }}"
+                                                       class="btn btn-outline-info btn-sm me-1">OK</a>
+                                                </span>
+                                            {% endif %}
+                                            <strong>HEAD:</strong>
+                                            <kbd class="kbd-izvirnik">{{ record.orighead }}</kbd>
+                                            <em>(izvirnik)</em>
+                                            -
+                                            <kbd>{% if record.newHead %}{{ record.newHead }}{% else %}{{ record.head }}{% endif %}</kbd>
+                                            <em>(prevod)</em>
+                                        </div>
+
+                                        <div>
+                                            <strong>RELATION:</strong>
+                                            <kbd>{{ record.origedge }}</kbd>
+                                        </div>
+
+                                        <div>
+                                            <strong>TAIL:</strong>
+                                            <kbd class="kbd-izvirnik">{{ record.origtail }}</kbd>
+                                            <em>(izvirnik)</em>
+                                            -
+                                            <kbd>{% if record.newTail %}{{ record.newTail }}{% else %}{{ record.tail }}{% endif %}</kbd>
+                                            <em>(prevod)</em>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse"
+                                 aria-labelledby="heading{{ loop.index }}" data-bs-parent="#accordion">
+                                <div class="accordion-body">
+                                    <form action="/Record/updateRecord" method="POST">
+                                        <input aria-label="" type="text" class="d-none" name="id"
+                                               value="{{ record._id }}">
+                                        <input aria-label="" type="text" class="d-none" name="file" value="{{ file }}">
+                                        <input aria-label="" type="text" class="d-none" name="skipping" value="">
+                                        <h6>Vnos prevodov</h6>
+                                        <div class="input-group input-group-sm mb-3">
+                                            <span class="input-group-text"
+                                                  id="inputGroup-sizing-sm"><i
+                                                        class="me-1 synonimsearchenabled">Izvirnik:</i> {{ record.orighead }}</span>
+                                            {% if record.newHead %}
+                                                <input type="text" class="form-control synonimsearchenabled"
+                                                       aria-label="" name="head"
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       value="{{ record.newHead }}">
+                                            {% else %}
+                                                <input type="text" class="form-control synonimsearchenabled"
+                                                       aria-label="" name="head"
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       value="{{ record.head }}">
+                                            {% endif %}
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Head</span>
+
+                                        </div>
+                                        <div class="input-group input-group-sm mb-3">
+                                            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="me-1">Izvirnik:</i>
+										{{ record.origedge }}</span>
+                                            <select class="form-select form-select-sm" name="relation"
+                                                    aria-label=".form-select-sm example" disabled>
+                                                <option selected>Izbira relacije</option>
+                                                {% for relation in relations %}
+                                                    {% if record.newEdge %}
+                                                        <option value="{{ relation.name }}" {% if relation.name==record.newEdge %}
+                                                        selected {% endif %}>{{ relation.name }}
+                                                            ({{ relation.description }})
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="{{ relation.name }}" {% if relation.name==record.edge %} selected
+                                                                {% endif %}>{{ relation.name }}
+                                                            ({{ relation.description }})
+                                                        </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Relation</span>
+                                        </div>
+                                        <div class="input-group input-group-sm mb-3">
+                                            <span class="input-group-text synonimsearchenabled"
+                                                  id="inputGroup-sizing-sm"><i
+                                                        class="me-1">Izvirnik:</i> {{ record.origtail }}</span>
+                                            {% if record.newTail %}
+                                                <input type="text" name="tail" class="form-control synonimsearchenabled"
+                                                       aria-label=""
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       value="{{ record.newTail }}">
+                                            {% else %}
+                                                <input type="text" name="tail" class="form-control synonimsearchenabled"
+                                                       aria-label=""
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       value="{{ record.tail }}">
+                                            {% endif %}
+                                            <span class="input-group-text" id="inputGroup-sizing-sm">Tail</span>
+                                        </div>
+                                        <div class="row gap-5 gap-md-0">
+                                            <div class="col-12 col-md-6">
+                                                <h6>Sinonimi</h6>
+                                                <span class="hideable synonymprompt">Izberite besedo z miškinim
+											kazalcem, da
+											sprožite iskanje
+											sinonimov</span>
+                                                <span class="hideable hide synonymnoresults">Ni rezultatov</span>
+                                                <div class="table-responsive hideable hide synonymtable">
+                                                    <a class="btn btn-sm btn-outline-danger opacity-75 closesynonims">X</a>
+                                                    <table class="table table-sm table-bordered table-striped">
+                                                        <thead>
+                                                        <tr class="synonymheader">
+                                                            <th>Naziv</th>
+                                                            <th>Razlaga</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="tablebodyscrollable">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <h6>Dodajanje komentarja</h6>
+                                                <textarea aria-label="" class="form-control" name="comment"
+                                                          rows="5"></textarea>
+                                            </div>
+
+                                            <div class="col-12 col-md-12 rev-div" id="revisionsDiv{{ loop.index }}">
+                                                {% if record.revisions %}
+                                                    <h6>Zgodovina urejanj (starejše zgoraj)</h6>
+                                                    <div class="scrollbox">
+                                                        <div class="list-group">
+
+                                                            {% for revision in record.revisions %}
+                                                                <div class="list-group-item flex-column align-items-start">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <h5 class="mb-1">{{ revision.user.name }}</h5>
+                                                                        <small>{{ revision.createdAt|date('Y/m/d H:i:s') }}</small>
+                                                                    </div>
+                                                                    {% if revision.comment and  ('-->' not in revision.head and '-->' not in revision.tail) %}
+                                                                        <h6>Komentar:</h6>
+                                                                        <div class="alert alert-info">
+                                                                            {{ revision.comment }}
+                                                                        </div>
+                                                                    {% else %}
+                                                                        <ul>
+                                                                            <li>
+                                                                                HEAD: <span
+                                                                                        class="revisionheadcontent">{{ revision.head }}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                RELATION: <span
+                                                                                        class="revisionrelationcontent">{{ revision.edge }}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                TAIL: <span
+                                                                                        class="revisionrelationcontent">{{ revision.tail }}</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                        {% if revision.comment %}
+                                                                            <h6>Komentar:</h6>
+                                                                            <div class="alert alert-info">
+                                                                                {{ revision.comment }}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            {% endfor %}
+
+
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="float-end mt-3">
+                                                    <div class="alert alert-success savesuccessmodal more-right hideable hide">
+                                                        <i class='bx bx-check'></i> Spremembe so shranjene!
+                                                    </div>
+                                                    <button type="submit" name="button_save_changes" value="save"
+                                                            class="btn btn-success savebtnrecord">
+                                                        <i class='bx bxs-save'></i> Shrani spremembe
+                                                    </button>
+                                                    <button type="submit" name="button_mark_todo" value="skip"
+                                                            title="Pritisnite ta gumb, da označite prevod za kasneje"
+                                                            class="btn btn-outline-info savebtnrecord">
+                                                        {#                                                        <i class='bx bxs-archive-in'></i> #}
+                                                        Skip
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {#    <script src="/js/index.js"></script> #}
+{% endblock %}

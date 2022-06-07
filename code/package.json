@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "mongodb": "^4.4.1",
+    "tempfile": "^4.0.0"
+  },
+  "devDependencies": {
+    "csv": "^6.0.5"
+  }
+}

@@ -1,0 +1,36 @@
+name	description
+AtLocation	se nahaja ali najdeno na/pri/v
+CapableOf	je/so sposobni
+Causes	povzroča
+CausesDesire	povzroča željo po
+CreatedBy	je ustvarjen na način
+Desires	želje
+HasA	ima, poseduje ali vsebuje
+HasFirstSubevent	se začne z dogodkom/dejanjem
+HasLastSubevent	se konča z dogodkom/dejanjem
+HasPrerequisite	za to dejanje je potreben predpogoj
+HasProperty	lahko opišemo, da je oziroma ima
+HasSubEvent	vsebuje dogodek/dejanje
+HinderedBy	je lahko ovirano s strani
+InstanceOf	je primer/primerek
+isAfter	se zgodi po
+isBefore	se zgodi pred
+isFilledBy	se zapolni z
+MadeOf	se narejeno iz
+MadeUpOf	je ustvarjeno iz (več komponent)
+MotivatedByGoal	je korak k dosegi cilja
+NotDesires	ne želi
+ObjectUse	je uporabljeno za
+UsedFor	je uporabljeno za
+oEffect	posledično, Y ali drugi bodo
+oReact	posledično, Y ali drugi občutijo
+oWant	posledično, Y ali drugi želijo
+PartOf	je del
+ReceivesAction	lahko utrpi dejanje
+xAttr	X je viden kot
+xEffect	posledično, OsebaX bo
+xIntent	ker OsebaX ima namen
+xNeed	vendar pred tem je OsebaX potrebovala
+xReact	posledično, OsebaX čuti
+xReason	iz razloga
+xWant	posledično, OsebaX želi

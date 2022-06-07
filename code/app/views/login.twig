@@ -1,0 +1,27 @@
+{% extends "layout.twig" %}
+{% block body %}
+    <div class="container p-4">
+        <p>{{ message }}</p>
+        <form action="/User/loginUser" method="post">
+            <div class="form-floating">
+                <input type="text" class="form-control" name="username" id="floatingInput" placeholder="">
+                <label for="floatingInput">Uporabniško ime</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="">
+                <label for="floatingPassword">Geslo</label>
+            </div>
+{#            <div class="checkbox mb-3">#}
+{#                <label>#}
+{#                    <input type="checkbox" value="remember-me">#}
+{#                    Zapomni se me#}
+{#                </label>#}
+{#            </div>#}
+            <button class="w-100 btn btn-lg btn-primary mt-2" type="submit">Prijava</button>
+        </form>
+        <a class="w-100 btn btn-lg btn-info mt-2" href="/register">Registacija (nimam še računa)</a>
+        <p class="mt-5 mb-3 text-muted w-100 text-center ">&copy; 2017–2022</p>
+    </div>
+
+
+{% endblock %}

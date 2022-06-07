@@ -76,11 +76,6 @@ Ob prvem zagonu Docker vsebnika se baza napolni s podatki - strojno generiranimi
 ## Sinonimi
 Za sinonime sta uporabljeni sliki Docker, opisani v [sinonimiapi](./code/sinonimiapi) in [sinonimidb](./code/sinonimidb).
 
-
-## Avtorji:
-- [Ivan Kovačič](https://git.lhrs.feri.um.si/ivan.kovacic)
-- [Kristjan Žagar](https://git.lhrs.feri.um.si/kristjan.zagar)
-
 ---
 
 > Operacijo Razvoj slovenščine v digitalnem okolju sofinancirata Republika Slovenija in Evropska unija iz Evropskega sklada za regionalni razvoj. Operacija se izvaja v okviru Operativnega programa za izvajanje evropske kohezijske politike v obdobju 2014-2020.

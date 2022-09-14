@@ -4,6 +4,3 @@ node_modules
 documents
 code/.env
 code/app/.env
-code/dbseed/train.tsv
-code/dbseed/test.tsv
-code/dbseed/dev.tsv

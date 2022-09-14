@@ -5,6 +5,7 @@ V datoteki [Dockerfile](Dockerfile) opišemo, katere datoteke želimo prenesti v
      ├──test.tsv
      ├──train.tsv
      ├──relations.tsv
+     ├──defaultComments.tsv
      └──user.tsv
 ```
 
@@ -35,6 +36,11 @@ V tej datoteki definiramo začetnega admin uporabnika, geslo je v našem primeru
 |-------------|-------------------------------------------|
 | name        | ime relacije (npr. xIntent)                |
 | description | opis relacije (npr. ker OsebaX ima namen) |
+
+## defaultComments.tsv
+| Entiteta | Opis |
+|----------|--|
+| comment  | Ena izmed možnosti za privzet komentar |
 
 ## Opozorilo!
 Te `.tsv` datoteke morejo imeti novo vrstico na koncu dokumenta, če ne se izpusti zadnja vrstica zapisanih elementov.

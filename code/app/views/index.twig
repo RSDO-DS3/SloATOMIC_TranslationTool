@@ -262,8 +262,25 @@
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <h6>Dodajanje komentarja</h6>
-                                                <textarea aria-label="" class="form-control" name="comment"
-                                                          rows="5"></textarea>
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <select class="form-select form-select-sm select-top commentsSelect"
+                                                            name="defaultComment" id="commentsSelect{{ loop.index }}"
+                                                            aria-label=".form-select-sm defualt-comment">
+                                                        <option class="select-top" value="defaultC" selected>Privzeti
+                                                            komentariji
+                                                        </option>
+                                                        {% for defaultComment in defaultComments %}
+                                                            <option class="select-item"
+                                                                    value="{{ defaultComment.comment }}">
+                                                                {{ defaultComment.comment }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <textarea aria-label="" class="form-control"
+                                                          id="txtAreaComment{{ loop.index }}"
+                                                          name="comment"
+                                                          rows="3"></textarea>
                                             </div>
 
                                             <div class="col-12 col-md-12 rev-div" id="revisionsDiv{{ loop.index }}">
@@ -318,14 +335,27 @@
                                                         <i class='bx bx-check'></i> Spremembe so shranjene!
                                                     </div>
                                                     <button type="submit" name="button_save_changes" value="save"
+                                                            title="Prisnite ta gumb, da shranite ta prevod (popravljen ali ne)"
                                                             class="btn btn-success savebtnrecord">
-                                                        <i class='bx bxs-save'></i> Shrani spremembe
+                                                        <i class='bx bxs-save'></i> Shrani
                                                     </button>
                                                     <button type="submit" name="button_mark_todo" value="skip"
                                                             title="Pritisnite ta gumb, da označite prevod za kasneje"
                                                             class="btn btn-outline-info savebtnrecord">
-                                                        {#                                                        <i class='bx bxs-archive-in'></i> #}
-                                                        Skip
+                                                        {# <i class='bx bxs-archive-in'></i> #}
+                                                        Preskoči
+                                                    </button>
+                                                    <button type="submit" name="button_previous_r" value="previous"
+                                                            title="Prejšnji element"
+                                                            {% if loop.index == 1 %} disabled {% endif %}
+                                                            class="btn btn-outline-secondary savebtnrecord">
+                                                        <i class='bx bxs-left-arrow-alt'></i>
+                                                    </button>
+                                                    <button type="submit" name="button_next_r" value="next"
+                                                            title="Naslednji element"
+                                                            {% if loop.index == (records|length) %} disabled {% endif %}
+                                                            class="btn btn-outline-secondary savebtnrecord">
+                                                        <i class='bx bxs-right-arrow-alt'></i>
                                                     </button>
                                                 </div>
                                             </div>

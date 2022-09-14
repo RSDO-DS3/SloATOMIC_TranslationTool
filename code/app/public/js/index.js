@@ -1,4 +1,4 @@
-var API_HOST = 'http://localhost:4000';
+var API_HOST = 'http://slo-atomic2020.feri.um.si:4000'; // todo: make this an .env variable
 
 function updateProgressBars(progressArr) {
     let totalDev = Math.floor(100 * progressArr[0] / progressArr[1]);
@@ -66,10 +66,9 @@ function getSynonym() {
         },
         error: function (xhr, msg, status) {
             // console.error(xhr.responseText);
-            // console.error(xhr, "xhr");
-            // console.error(msg, "msg");
-            // console.error(status, "status");
-            // temporarily commented out error logging from the synonim function
+            console.error(xhr, "xhr");
+            console.error(msg, "msg");
+            console.error(status, "status");
         }
     });
 }
@@ -92,7 +91,23 @@ function setupForms() {
     $('.record-parent form').each(function (i, elt) {
         $(elt).on('submit', function (e) {
             e.preventDefault();
-            $(elt[name = 'skipping']).val(e.originalEvent.submitter.name === "button_mark_todo" ? 1 : 0);
+            let btnName = e.originalEvent.submitter.name
+            $(elt[name = 'skipping']).val(btnName === "button_mark_todo" ? 1 : 0);
+
+            let recParent = $(elt).parents('.record-parent');
+            let bar = recParent.find('.accord-bar');
+            let loopIdx = bar.prevObject.attr('id').replace('record', '')
+
+            if (btnName === 'button_next_r' || btnName === 'button_previous_r'){
+                let acc = $(elt).closest('#accordion').children()
+                //  collapse current one
+                $(elt).parents('.show').collapse('hide');
+
+                let aIdx = (loopIdx-1) + (btnName === 'button_next_r' ? 1 : -1);
+                $($(acc[aIdx]).children('div')[0]).collapse('show')
+                return;
+            }
+
             $.ajax(
                 {
                     url: '/Record/updateRecord',
@@ -106,7 +121,7 @@ function setupForms() {
                         $(elt).find('.savebtnrecord').attr('disabled', 'disabled');
                         $(elt).find('.savesuccessmodal').removeClass('hide');
 
-                        let recParent = $(elt).parents('.record-parent');
+                        // let recParent = $(elt).parents('.record-parent');
                         recParent.addClass('edited');
                         let ski = $(elt[name = 'skipping']).val() == 1;
                         if (ski) {
@@ -127,12 +142,12 @@ function setupForms() {
                             recParent.removeClass('edited edited-was-ok marked-for-later');
                         }
 
-                        let bar = recParent.find('.accord-bar');
+                        // let bar = recParent.find('.accord-bar');
                         if (!ski) {
                             bar.find('a').remove();
                         }
                         if (ski || response?.revertedBackToInitial) {
-                            let loopIdx = bar.prevObject.attr('id').replace('record', '')
+                            // let loopIdx = bar.prevObject.attr('id').replace('record', '')
                             if (!$(bar.find(`a#isokbtn${loopIdx}`)).length)
                                 $(bar.find('div.overflow-hidden'))
                                     .prepend(`<span><a id="isokbtn${loopIdx}" class="btn btn-outline-info btn-sm me-1">OK</a></span>`)
@@ -151,11 +166,19 @@ function setupForms() {
                             $(elt).find('.savebtnrecord').removeAttr('disabled');
                             $(elt[name = 'skipping']).val(0);
                             $(elt).parents('.show').collapse('hide');
+                            $(elt[name = 'comment']).val('')
+                            $(elt[name = 'comment']).parent().find('select').prop('selectedIndex',0);
                         }, 1000);
+
                         console.dir(response);
                     },
                     error: function (xhr, msg, err) {
                         if (xhr.responseText === "No changes were made.") {
+                            if(btnName === 'button_save_changes'){
+                                $($(elt).closest('#accordion').children()[loopIdx-1]).find(`#isokbtn${loopIdx}`).click()
+                                return;
+                            }
+
                             $(elt).find('.savebtnrecord').attr('disabled', 'disabled');
 
                             let saveSucc = $(elt).find('.savesuccessmodal');
@@ -305,45 +328,65 @@ function setupForms() {
         //     $(el).trigger('click');
         // });
 
-        let file = ""
-        let anyChangesMade = false;
-        let toUpdate = []
-        $('div.accordion').find('form').each(function (i, el) {
-            // $(el).trigger('click');
-            // we also ignore the marked for later ones
-            let alrEdited = $(this).parents('.accordion-item').is('.edited, .edited-was-ok, .marked-for-later')
-            if (!alrEdited) {
-                file = $(this[name = "file"]).val();
-                $(this[name = "comment"]).val(""); // se bo avtomatsko nastavil na serveru
-                anyChangesMade = true
-                toUpdate.push(
-                    {
-                        "id": $(this[name = "id"]).val(),
-                        "head": $(this[name = "head"]).val(),
-                        "tail": $(this[name = "tail"]).val(),
-                        "comment": $(this[name = "comment"]).val(),
-                        "file": file,
-                        "unchanged": true
-                    });
-            }
-        });
-        if (anyChangesMade) {
-            $.ajax(
-                {
-                    url: "/Record/updateRecordMany",
-                    method: "POST",
-                    data: {'toUpdate': toUpdate, 'massEditing': true},
-                    success: function (response) {
-                        location.reload();
-                    },
-                    error: function (xhr, msg, err) {
-                        console.dir(xhr);
-                        console.dir(msg);
-                        console.dir(err);
+        $.confirm({
+            title: 'Ste prepričani?',
+            content: '<strong>Vse vidne neurejene elemente</strong> boste označili kot sprmenljive',
+            buttons: {
+                confirm: {
+                    text: "Potrdi",
+                    keys: ['enter'],
+                    btnClass: 'btn-success',
+                    action: function () {
+                        let file = ""
+                        let anyChangesMade = false;
+                        let toUpdate = []
+                        $('div.accordion').find('form').each(function (i, el) {
+                            // $(el).trigger('click');
+                            // we also ignore the marked for later ones
+                            let alrEdited = $(this).parents('.accordion-item').is('.edited, .edited-was-ok, .marked-for-later')
+                            if (!alrEdited) {
+                                file = $(this[name = "file"]).val();
+                                $(this[name = "comment"]).val(""); // se bo avtomatsko nastavil na serveru
+                                anyChangesMade = true
+                                toUpdate.push(
+                                    {
+                                        "id": $(this[name = "id"]).val(),
+                                        "head": $(this[name = "head"]).val(),
+                                        "tail": $(this[name = "tail"]).val(),
+                                        "comment": $(this[name = "comment"]).val(),
+                                        "file": file,
+                                        "unchanged": true
+                                    });
+                            }
+                        });
+                        if (anyChangesMade) {
+                            $.ajax(
+                                {
+                                    url: "/Record/updateRecordMany",
+                                    method: "POST",
+                                    data: {'toUpdate': toUpdate, 'massEditing': true},
+                                    success: function (response) {
+                                        location.reload();
+                                    },
+                                    error: function (xhr, msg, err) {
+                                        console.dir(xhr);
+                                        console.dir(msg);
+                                        console.dir(err);
+                                    }
+                                }
+                            )
+                        } else $.alert("Ni bilo izvedenih sprememb. Morda so že vsi vidni dokumenti na strani označeni..");
                     }
+                },
+                cancel: {
+                    text: "Prekliči",
+                    keys: ['esc'],
+                    btnClass: 'btn-danger'
                 }
-            )
-        } else $.alert("Ni bilo izvedenih sprememb. Morda so že vsi vidni dokumenti na strani označeni..");
+            }
+
+        });
+
 
     });
 
@@ -450,7 +493,7 @@ function setupForms() {
                 }
 
                 if (changesMade) {
-                    let komentar = "Sistemski komentar: Sprememba je bila izvedena s naprednim urejevalnikom--" + $('#zamenjava-form').children('textarea').val();
+                    let komentar = "Sistemski komentar: Sprememba je bila izvedena z naprednim urejevalnikom--" + $('#zamenjava-form').children('textarea').val();
                     $(this[name = "comment"]).val(komentar);
 
                     // $(this).submit();
@@ -640,7 +683,7 @@ function setupJumpToPage() {
             //window.location = jump_to_url.replace("perpage=", `perpage=${to_go_to}`);
             window.location = jump_to_url.replace(/(perpage=)\d+/, '$1' + to_go_to.toString())
         } else {
-            alert("Stran more bit število");
+            $.alert("Stran more biti število");
         }
     });
 }
@@ -700,6 +743,18 @@ function setupOKbuttons() {
     });
 }
 
+function setupCommentsSelect() {
+    $(document).on('change', '.commentsSelect', function () {
+        console.log()
+        let comm = $(this).val();
+        if (comm !== 'defaultC')
+            $(`#txtAreaComment${$(this).attr('id').replace('commentsSelect', '')}`).val(comm);
+        else
+            $(`#txtAreaComment${$(this).attr('id').replace('commentsSelect', '')}`).val('');
+    });
+
+}
+
 if (typeof $ !== "undefined") {
     // temporary if ^
     $(function () {
@@ -710,6 +765,7 @@ if (typeof $ !== "undefined") {
         setupJumpToPage();
         setupBtnToCloseSynonims();
         setupProgressBar();
+        setupCommentsSelect();
     });
 }
 

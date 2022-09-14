@@ -21,6 +21,7 @@ code
      ├──test.tsv
      ├──train.tsv
      ├──relations.tsv
+     ├──defaultComments.tsv
      └──user.tsv
 ```
 Lahko jih tudi poljubno preimenujemo, kar nato v [code/dbseed/Dockerfile](./code/dbseed/Dockerfile) prilagodimo. (V tej reviziji smo to načeloma tudi storili)

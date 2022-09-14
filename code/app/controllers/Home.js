@@ -1,4 +1,5 @@
 const Relation = require('../models/Relation');
+const DefaultComment = require('../models/DefaultComment');
 const DevRecord = require('../models/DevRecord');
 const Users = require('../models/User')
 const TrainRecord = require("../models/TrainRecord");
@@ -7,7 +8,13 @@ const TestRecord = require("../models/TestRecord");
 class HomeController {
 
     static async loginPage(req, res, next) {
-        res.render('login');
+        try {
+            res.render('login');
+        } catch (err) {
+            console.log("Home Login error");
+            console.log(err);
+            next(err);
+        }
     }
 
     static async registerPage(req, res, next) {
@@ -18,13 +25,27 @@ class HomeController {
     }
 
     static async editUser(req, res, next) {
-        res.render('editUser');
+        try {
+            res.render('editUser');
+        } catch (err) {
+            console.log("Res render edit user error");
+            console.log(err);
+            next(err);
+        }
     }
 
     static async manageUsers(req, res, next) {
-        res.locals.users = await Users.find();
-        // await this.updateUserProgress(res.locals.users);
-        res.render('manageUsers');
+        console.log("we at manageUsers")
+        try {
+            res.locals.users = await Users.find();
+            // await this.updateUserProgress(res.locals.users);
+            res.render('manageUsers');
+        } catch (err) {
+            console.log("Manage users error..");
+            console.log(err);
+            next(err);
+        }
+
     }
 
     static async index(req, res, next) {

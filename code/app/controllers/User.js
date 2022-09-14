@@ -70,10 +70,16 @@ class UserController {
                         password: hashedPassword
                     });
                 }
+                console.log("Checkpoin 1");
+
                 if (alsoGiveMore === "true") {
                     await RUManager.AssignRecordsToUser(await User.findById(userId), 0, devAssigned, trainAssigned, testAssigned);
                 }
 
+                console.log("Checkpoin 2");
+                console.log("aamm res locals", res.locals);
+                console.log("aamm res session", res.session);
+                console.log("aamm req session", req.session);
                 return res.render('manageUsers');
             } else {
                 //res.locals.mode = 'new';
@@ -124,6 +130,7 @@ class UserController {
 
             return res.redirect('/manageUsers');
         } catch (err) {
+            console.log("error at create user");
             next(err);
         }
 

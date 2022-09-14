@@ -57,7 +57,7 @@ a {
     align-items: center;
     padding: 0 30px 0 0;
     height: 60px;
-    border-right: 1px solid #f0f0f0;
+    border-right: 1px solid transparent;
 }
 
 .logo-icon {
@@ -69,12 +69,16 @@ a {
     margin-left: 10px;
 }
 
+#advanced-search-toggle {
+    color: white;
+}
+
 .logo-text {
     font-size: 22px;
     margin-left: 10px;
     margin-bottom: 0;
     letter-spacing: 1px;
-    color: #0d6efd;
+    color: white;
     position: relative;
     top: 5px;
 }
@@ -102,6 +106,7 @@ a {
     height: 60px;
     padding-left: 30px;
     padding-right: 30px;
+    background: #006cb7;
 }
 
 .page-wrapper {
@@ -1795,6 +1800,11 @@ input::placeholder {
     background-color: #ffffff;
     border: 1px solid #e1e1e1;
     padding-right: 2.5rem;
+    font-weight: 600;
+}
+
+#main-search-input {
+    font-size: 15px;
 }
 
 .search-show {
@@ -1847,19 +1857,19 @@ input::placeholder {
 .user-info .user-name {
     font-size: 15px;
     font-weight: 500;
-    color: #413c3c;
+    color: #dedede;
 }
 
 .user-info .designattion {
     font-size: 13px;
-    color: #a9a8a8;
+    color: #dcdcdc;
 }
 
 .user-box {
     display: flex;
     align-items: center;
     height: 60px;
-    border-left: 1px solid #f0f0f0;
+    border-left: 1px solid transparent;
     margin-left: 1rem;
 }
 
@@ -2585,4 +2595,10 @@ input[id=radio-3]:checked ~ .glider {
     color: #535a60;
 }
 
+.select-top {
+    color: gray;
+}
 
+.select-item {
+    color: black;
+}

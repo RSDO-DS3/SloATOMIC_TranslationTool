@@ -1,4 +1,5 @@
 const Relation = require('../models/Relation');
+const Defaultcomment = require('../models/DefaultComment');
 const DevRecord = require('../models/DevRecord');
 const TrainRecord = require('../models/TrainRecord');
 const TestRecord = require('../models/TestRecord');
@@ -126,6 +127,7 @@ class RecordController {
 
             res.locals.perpage = perpage;
             res.locals.relations = await Relation.find().lean();
+            res.locals.defaultComments = await Defaultcomment.find().lean();
 
             res.locals.records = await model.find(filter)
                 .populate({

@@ -38,7 +38,7 @@ class RecordUserManager {
             user.numRecordsAssigned[5] += numOfAssignTest;
         }
 
-        console.log(`Assigning this amount of records to ${user.name}:\nDev: ${numOfAssignDev}\nTrain: ${numOfAssignTrain}\nTest: ${numOfAssignTest}`);
+        // console.log(`Assigning this amount of records to ${user.name}:\nDev: ${numOfAssignDev}\nTrain: ${numOfAssignTrain}\nTest: ${numOfAssignTest}`);
 
         await user.save();
 
@@ -84,6 +84,15 @@ class RecordUserManager {
             console.log(err, "bulkwrite section error while removing user from records");
         }
 
+    }
+
+    static async GetRemainingToEdit() {
+        let remainingDev = await DevRecord.count({'assignedUser': {'$exists': false}});
+        let remainingTrain = await TrainRecord.count({'assignedUser': {'$exists': false}});
+        let remainingTest = await TestRecord.count({'assignedUser': {'$exists': false}});
+
+        return {remainingDev, remainingTrain, remainingTest}
+        // console.log(`Remaining unassigned:\nDev: ${remainingDev}\nTrain: ${remainingTrain}\nTest: ${remainingTest}`);
     }
 }
 

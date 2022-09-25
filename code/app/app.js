@@ -73,7 +73,11 @@ app.use(async (req, res, next) => {
 
 
 app.get('/', function (req, res, next) {
-    require('./controllers/Home').index(req, res, next);
+    if (req.session?.user?.admin) {
+        require('./controllers/Home').manageUsers(req, res, next);
+    } else {
+        require('./controllers/Home').index(req, res, next);
+    }
 });
 
 app.get('/register', function (req, res, next) {
@@ -92,24 +96,22 @@ app.get('/login', function (req, res, next) {
 
 app.get('/logout', (req, res, next) => {
     try {
-        console.log("---LOGOUT GET");
-        console.log("---Checking REQ (session)", req.session);
-        console.log("---Checking RES (locals)", res.locals);
+        //console.log("---LOGOUT GET");
+        //console.log("---Checking REQ (session)", req.session);
+        //console.log("---Checking RES (locals)", res.locals);
 
-        console.log("Redirecting to /login (now) (try location later)");
+        //console.log("Redirecting to /login (now) (try location later)");
         res.redirect('/login');
 
 
-        console.log("L1 req.session", req.session)
-        console.log("L1 res.session", res.session)
+        //console.log("L1 req.session", req.session)
 
-        console.log("Destroying session", req.session);
+        //console.log("Destroying session", req.session);
         req.session.destroy();
 
-        console.log("L2 req.session", req.session)
-        console.log("L2 res.session", res.session)
+        //console.log("L2 res.session", res.session)
 
-        console.log("We are at login now (are we?)");
+        //console.log("We are at login now (are we?)");
     } catch (err) {
         console.log("Logout error");
         console.log(err);
@@ -129,11 +131,10 @@ app.get('/User/edituser', function (req, res, next) {
 
 app.get('/manageUsers', function (req, res, next) {
     try {
-        console.log("we at manage users get")
+        //console.log("we at manage users get")
 
         if (req.session.user && req.session.user.admin) {
             require('./controllers/Home').manageUsers(req, res, next);
-
         } else {
             require('./controllers/Home').index(req, res, next);
         }

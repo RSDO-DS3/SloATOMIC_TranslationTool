@@ -70,16 +70,16 @@ class UserController {
                         password: hashedPassword
                     });
                 }
-                console.log("Checkpoin 1");
+                //console.log("Checkpoin 1");
 
                 if (alsoGiveMore === "true") {
                     await RUManager.AssignRecordsToUser(await User.findById(userId), 0, devAssigned, trainAssigned, testAssigned);
                 }
 
-                console.log("Checkpoin 2");
-                console.log("aamm res locals", res.locals);
-                console.log("aamm res session", res.session);
-                console.log("aamm req session", req.session);
+                //console.log("Checkpoin 2");
+                //console.log("aamm res locals", res.locals);
+                //console.log("aamm res session", res.session);
+                //console.log("aamm req session", req.session);
                 return res.render('manageUsers');
             } else {
                 //res.locals.mode = 'new';
@@ -222,6 +222,10 @@ class UserController {
 
     static async updateUsersProgresses(req, res, next) {
         // update user progress
+        let st = await RUManager.GetRemainingToEdit()
+
+        console.log(res.locals.remainingStats = `Remaining unassigned:\nDev: ${st['remainingDev']}\nTrain: ${st['remainingTrain']}\nTest: ${st['remainingTest']}`)
+
         if (!res.locals.user?.admin) {
             return res.status(403).send("Forbidden! Must be admin...");
         }

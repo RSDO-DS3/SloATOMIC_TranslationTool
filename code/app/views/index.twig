@@ -142,18 +142,22 @@
                                         aria-controls="collapse{{ loop.index }}">
                                     <div class="accord-bar w-100 d-flex flex-md-row gap-3 justify-content-start">
                                         <div class="overflow-hidden">
-                                            {% if not record.edited %}
-                                                <span>
-                                                    <a id="isokbtn{{ loop.index }}"
-                                                       class="btn btn-outline-info btn-sm me-1">OK</a>
-                                                </span>
-                                            {% endif %}
-                                            <strong>HEAD:</strong>
-                                            <kbd class="kbd-izvirnik">{{ record.orighead }}</kbd>
-                                            <em>(izvirnik)</em>
-                                            -
-                                            <kbd>{% if record.newHead %}{{ record.newHead }}{% else %}{{ record.head }}{% endif %}</kbd>
-                                            <em>(prevod)</em>
+                                            <div class="left-side-acc">
+                                                {% if not record.edited %}
+                                                    <span>
+                                                        <a id="isokbtn{{ loop.index }}"
+                                                           class="btn btn-outline-success btn-sm me-1">OK</a>
+                                                    </span>
+                                                {% endif %}
+                                                <strong>HEAD:</strong>
+                                                <kbd class="kbd-izvirnik">{{ record.orighead }}</kbd>
+                                                <em>(izvirnik)</em>
+                                            </div>
+                                            <div class="prevod-div-in-acc-head {% if not record.edited %}not-edited-head{% endif %}">
+                                                <kbd>{% if record.newHead %}{{ record.newHead }}{% else %}{{ record.head }}{% endif %}</kbd>
+                                                <em>(prevod)</em>
+                                            </div>
+
                                         </div>
 
                                         <div>
@@ -162,12 +166,15 @@
                                         </div>
 
                                         <div>
-                                            <strong>TAIL:</strong>
-                                            <kbd class="kbd-izvirnik">{{ record.origtail }}</kbd>
-                                            <em>(izvirnik)</em>
-                                            -
-                                            <kbd>{% if record.newTail %}{{ record.newTail }}{% else %}{{ record.tail }}{% endif %}</kbd>
-                                            <em>(prevod)</em>
+                                            <div>
+                                                <strong>TAIL:</strong>
+                                                <kbd class="kbd-izvirnik">{{ record.origtail }}</kbd>
+                                                <em>(izvirnik)</em>
+                                            </div>
+                                            <div class="prevod-div-in-acc-tail">
+                                                <kbd>{% if record.newTail %}{{ record.newTail }}{% else %}{{ record.tail }}{% endif %}</kbd>
+                                                <em>(prevod)</em>
+                                            </div>
                                         </div>
                                     </div>
                                 </button>
@@ -337,11 +344,11 @@
                                                     <button type="submit" name="button_save_changes" value="save"
                                                             title="Prisnite ta gumb, da shranite ta prevod (popravljen ali ne)"
                                                             class="btn btn-success savebtnrecord">
-                                                        <i class='bx bxs-save'></i> Shrani
+                                                        <i class='bx bxs-save'></i> Shrani ali označi kot OK
                                                     </button>
                                                     <button type="submit" name="button_mark_todo" value="skip"
                                                             title="Pritisnite ta gumb, da označite prevod za kasneje"
-                                                            class="btn btn-outline-info savebtnrecord">
+                                                            class="btn btn-outline-warning savebtnrecord">
                                                         {# <i class='bx bxs-archive-in'></i> #}
                                                         Preskoči
                                                     </button>

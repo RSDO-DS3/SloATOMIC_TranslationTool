@@ -78,7 +78,12 @@ class RecordController {
 
             let filter = {};
             if (unedited) {
-                filter['edited'] = {'$exists': false};
+                filter['$and'] = []
+                let filtOr = []
+                filtOr.push({'edited': {'$exists': false}})
+                filtOr.push({'edited': false})
+                filtOr.push({'markedForLater': true})
+                filter['$and'].push({'$or': filtOr})
             }
             if (!res.locals.user.admin) {
                 filter['assignedUser'] = {'$exists': true, '$eq': userId};
@@ -96,18 +101,22 @@ class RecordController {
                     if (obj["ed"]) search_for_ed = obj["ed"];
                 }
 
-                filter['$or'] = [];
+                if (!('$and' in filter))
+                    filter['$and'] = [];
 
+                let filtOr = []
                 if (search_for_oh)
-                    filter['$or'].push({'orighead': {'$regex': search_for_oh}});
+                    filtOr.push({'orighead': {'$regex': search_for_oh}});
                 if (search_for_ot)
-                    filter['$or'].push({'origtail': {'$regex': search_for_ot}});
+                    filtOr.push({'origtail': {'$regex': search_for_ot}});
                 if (search_for_h)
-                    filter['$or'].push({'head': {'$regex': search_for_h}});
+                    filtOr.push({'head': {'$regex': search_for_h}});
                 if (search_for_t)
-                    filter['$or'].push({'tail': {'$regex': search_for_t}});
+                    filtOr.push({'tail': {'$regex': search_for_t}});
                 if (search_for_ed)
-                    filter['$or'].push({'edge': {'$regex': search_for_ed}});
+                    filtOr.push({'edge': {'$regex': search_for_ed}});
+
+                filter['$and'].push({'$or': filtOr})
             }
 
             let model = DevRecord;
@@ -116,6 +125,7 @@ class RecordController {
 
             res.locals.total = Math.ceil((await model.count(filter)) / perpage);
             if (page > res.locals.total) page = res.locals.total;
+            if (page <= 0) page = 1;
 
             res.locals.page = page;
             res.locals.file = file;
@@ -128,6 +138,10 @@ class RecordController {
             res.locals.perpage = perpage;
             res.locals.relations = await Relation.find().lean();
             res.locals.defaultComments = await Defaultcomment.find().lean();
+
+            //console.log("filter", filter)
+            //console.log("page", page)
+            //console.log("perpage", perpage)
 
             res.locals.records = await model.find(filter)
                 .populate({
@@ -294,7 +308,7 @@ class RecordController {
                     comment,
                     user: req.session.user
                 });
-                console.log(record, 'RECCCCCCCCCCC');
+                // console.log(record, 'RECCCCCCCCCCC');
                 if (!record.newHead && !record.newHead && record.revisions?.length >= 1) addOneToProgress = true;
                 record.newHead = head;
                 record.newEdge = record.edge;  // this actually stays the same

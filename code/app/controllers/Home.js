@@ -38,6 +38,12 @@ class HomeController {
         console.log("we at manageUsers")
         try {
             res.locals.users = await Users.find();
+
+            let remainingDev = await DevRecord.count({'assignedUser': {'$exists': false}});
+            let remainingTrain = await TrainRecord.count({'assignedUser': {'$exists': false}});
+            let remainingTest = await TestRecord.count({'assignedUser': {'$exists': false}});
+            res.locals.remainingStats = `Remaining unassigned:\nDev: ${remainingDev}\nTrain: ${remainingTrain}\nTest: ${remainingTest}`
+
             // await this.updateUserProgress(res.locals.users);
             res.render('manageUsers');
         } catch (err) {

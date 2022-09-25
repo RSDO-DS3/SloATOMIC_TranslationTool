@@ -98,12 +98,12 @@ function setupForms() {
             let bar = recParent.find('.accord-bar');
             let loopIdx = bar.prevObject.attr('id').replace('record', '')
 
-            if (btnName === 'button_next_r' || btnName === 'button_previous_r'){
+            if (btnName === 'button_next_r' || btnName === 'button_previous_r') {
                 let acc = $(elt).closest('#accordion').children()
                 //  collapse current one
                 $(elt).parents('.show').collapse('hide');
 
-                let aIdx = (loopIdx-1) + (btnName === 'button_next_r' ? 1 : -1);
+                let aIdx = (loopIdx - 1) + (btnName === 'button_next_r' ? 1 : -1);
                 $($(acc[aIdx]).children('div')[0]).collapse('show')
                 return;
             }
@@ -149,8 +149,8 @@ function setupForms() {
                         if (ski || response?.revertedBackToInitial) {
                             // let loopIdx = bar.prevObject.attr('id').replace('record', '')
                             if (!$(bar.find(`a#isokbtn${loopIdx}`)).length)
-                                $(bar.find('div.overflow-hidden'))
-                                    .prepend(`<span><a id="isokbtn${loopIdx}" class="btn btn-outline-info btn-sm me-1">OK</a></span>`)
+                                $(bar.find('div.left-side-acc'))
+                                    .prepend(`<span><a id="isokbtn${loopIdx}" class="btn btn-outline-success btn-sm me-1">OK</a></span>`)
                             setupOKbuttons()
                         }
 
@@ -167,22 +167,29 @@ function setupForms() {
                             $(elt[name = 'skipping']).val(0);
                             $(elt).parents('.show').collapse('hide');
                             $(elt[name = 'comment']).val('')
-                            $(elt[name = 'comment']).parent().find('select').prop('selectedIndex',0);
+                            $(elt[name = 'comment']).parent().find('select').prop('selectedIndex', 0);
                         }, 1000);
 
                         console.dir(response);
                     },
                     error: function (xhr, msg, err) {
                         if (xhr.responseText === "No changes were made.") {
-                            if(btnName === 'button_save_changes'){
-                                $($(elt).closest('#accordion').children()[loopIdx-1]).find(`#isokbtn${loopIdx}`).click()
-                                return;
+                            let defaultTxt = " Ni bilo nobene spremembe!";
+
+                            if (btnName === 'button_save_changes') {
+                                let okBTN = $($(elt).closest('#accordion').children()[loopIdx - 1]).find(`#isokbtn${loopIdx}`)
+                                if (okBTN.length === 0) {
+                                    defaultTxt = " Ni bilo sprmembe na že označenem dokumentu!"
+                                } else {
+                                    okBTN.click();
+                                    return;
+                                }
                             }
 
                             $(elt).find('.savebtnrecord').attr('disabled', 'disabled');
 
                             let saveSucc = $(elt).find('.savesuccessmodal');
-                            saveSucc.text(" Ni bilo nobene spremembe!");
+                            saveSucc.text(defaultTxt);
                             saveSucc.removeClass('alert-success');
                             saveSucc.addClass('alert-danger');
                             saveSucc.removeClass('hide');
@@ -227,12 +234,12 @@ function setupForms() {
         $(el).mousedown(function (e) {
             e.preventDefault();
             // e.stopPropagation();
-            if (e.button === 0) { // LMB
+            if (e.button === 0 && !e.shiftKey && !e.ctrlKey) { // LMB
                 if ($(e.target).attr('id')?.startsWith("isokbtn")) {
                     $(el).removeAttr('data-bs-toggle');
                 }
             }
-            if (e.button === 1) { // Middle mouse
+            if (e.button === 1 || (e.shiftKey && e.button === 0) || (e.ctrlKey && e.button === 0)) { // Middle mouse or SHIFT+LMB or CTRL+LMB
                 let form = $(el).parent().parent().find('form');
                 let oldHeadVal = form.find('input[name="head"]').val();
                 let file = form.find('input[name="file"]').val();
@@ -244,7 +251,7 @@ function setupForms() {
                         '<div class="form-group">' +
                         '<label>Novi head:</label>' +
                         `<input type="text" placeholder="Vnesi novi head" value="${oldHeadVal}" class="form-control newHeadVal form-control" required />` +
-                        '<div class="font-11 mt-3 opacity-50">Predlog: Prvo uredite vse taile tega heada</div>' +
+                        '<div class="font-11 mt-3 opacity-50"><strong>Predlog:</strong> Prvo uredite vse tail-e tega head-a</div>' +
                         '</div>' +
                         '</form>',
                     buttons: {

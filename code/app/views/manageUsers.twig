@@ -1,9 +1,9 @@
 {% extends "layout.twig" %}
 {% block body %}
-    <div class="mt-3">
+    <div>
         <h3>Dodaj novega uporabnika</h3>
     </div>
-    <div class="mt-3">
+    <div>
     <div class="p-4 admin-make-user">
         <form action="/User/createUser">
             <input type="text" class="d-none" name="adminCreate" value="true">
@@ -46,10 +46,18 @@
             <button type="submit" id="Admin-create-user" class="btn btn-secondary" disabled="disabled">Ustvari</button>
         </form>
     </div>
+    <div class="mt-3">
+        <h3>Statistika</h3>
+        <div class="mt-3">
+            {{ remainingStats }}
+        </div>
+    </div>
     <div class="mt-3 d-flex">
         <h3>Obstoječi uporabniki</h3>
         <form action="/User/updateUsersProgresses" method="POST">
-            <button type="submit" id="manage_users_prog_update" class="btn btn-outline-secondary ms-3">Posodobi progresse</button>
+            <button type="submit" id="manage_users_prog_update" class="btn btn-outline-secondary ms-3">Posodobi
+                progresse
+            </button>
         </form>
     </div>
     <div class="accordion mt-3" id="accordion">

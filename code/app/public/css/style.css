@@ -139,6 +139,30 @@ th {
     background: #434b52;
 }
 
+.prevod-div-in-acc-head {
+    margin-top: 5px;
+}
+
+.prevod-div-in-acc-head > kbd {
+    margin-left: 37px;
+}
+
+.not-edited-head {
+    margin-top: 1px;
+}
+
+.not-edited-head > kbd {
+    margin-left: 72px;
+}
+
+.prevod-div-in-acc-tail {
+    margin-top: 5px
+}
+
+.prevod-div-in-acc-tail > kbd {
+    margin-left: 30px;
+}
+
 ._w-13 {
     width: 13% !important;
 }

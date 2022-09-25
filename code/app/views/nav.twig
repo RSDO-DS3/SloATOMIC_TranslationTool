@@ -16,36 +16,38 @@
                 </div>
                 <div class="search-bar flex-grow-1" id="search-bar-box">
                     <div class="position-relative form-control-sm search-bar-box">
-                        <form id="search-form" class="d-flex form-inline"
-                              action="/Record/editFile?page={{ page }}{{ queryparamsurl }}">
-                            <input class="form-control search-control" id="main-search-input" type="text"
-                                   placeholder="Iskanje..."
-                                   aria-label="Iskanje">
+                        {% if not user.admin %}
+                            <form id="search-form" class="d-flex form-inline"
+                                  action="/Record/editFile?page={{ page }}{{ queryparamsurl }}">
+                                <input class="form-control search-control" id="main-search-input" type="text"
+                                       placeholder="Iskanje..."
+                                       aria-label="Iskanje">
 
-                            <input class="form-control search-control hidden" id="orighead-search-input" type="text"
-                                   placeholder="orighead... (EN)"
-                                   aria-label="Iskanje">
-                            <input class="form-control search-control hidden" id="origtail-search-input" type="text"
-                                   placeholder="origtail... (EN)"
-                                   aria-label="Iskanje">
-                            <input class="form-control search-control hidden" id="head-search-input" type="text"
-                                   placeholder="head... (SLO)"
-                                   aria-label="Iskanje">
-                            <input class="form-control search-control hidden" id="tail-search-input" type="text"
-                                   placeholder="tail... (SLO)"
-                                   aria-label="Iskanje">
-                            <input class="form-control search-control hidden" id="edge-search-input" type="text"
-                                   placeholder="edge... (Relacija)"
-                                   aria-label="Iskanje">
+                                <input class="form-control search-control hidden" id="orighead-search-input" type="text"
+                                       placeholder="orighead... (EN)"
+                                       aria-label="Iskanje">
+                                <input class="form-control search-control hidden" id="origtail-search-input" type="text"
+                                       placeholder="origtail... (EN)"
+                                       aria-label="Iskanje">
+                                <input class="form-control search-control hidden" id="head-search-input" type="text"
+                                       placeholder="head... (SLO)"
+                                       aria-label="Iskanje">
+                                <input class="form-control search-control hidden" id="tail-search-input" type="text"
+                                       placeholder="tail... (SLO)"
+                                       aria-label="Iskanje">
+                                <input class="form-control search-control hidden" id="edge-search-input" type="text"
+                                       placeholder="edge... (Relacija)"
+                                       aria-label="Iskanje">
 
-                            <button class="btn btn-secondary" type="submit">
-                                <i class="bx bx-search"></i>
-                            </button>
-                            <a class="btn btn-sm pl-2" id="advanced-search-toggle">
-                                <i class="bx bx-cog"></i>
-                                <span>Napredno iskanje</span>
-                            </a>
-                        </form>
+                                <button class="btn btn-secondary" type="submit">
+                                    <i class="bx bx-search"></i>
+                                </button>
+                                <a class="btn btn-sm pl-2" id="advanced-search-toggle">
+                                    <i class="bx bx-cog"></i>
+                                    <span>Napredno iskanje</span>
+                                </a>
+                            </form>
+                        {% endif %}
                         {#                        <input type="text" id="main-search-bar" class="form-control search-control" placeholder="Iskanje..."> #}
                         {#                        <button class="btn btn-sm btn-secondary">Išči</button> #}
                         {#                    <span class="position-absolute top-50 search-show translate-middle-y"> #}
@@ -176,7 +178,7 @@
 {#        </ul> #}
 {#    </nav> #}
 {# </div> #}
-{% if user %}
+{% if user and not user.admin %}
     <div class="navi-container">
         <div class="tabs">
             <input type="radio" id="radio-1" name="tabs" onclick="location.href='/Record/editFile?file=dev.tsv'"
@@ -184,6 +186,9 @@
             <label class="tab" for="radio-1">dev.tsv
                 {% if not user.admin %}
                     {% set totalDev = 100 * user.numRecordsAssigned[0] // user.numRecordsAssigned[1] %}
+                    {% if user.numRecordsAssigned[1] == 0 %}
+                        {% set totalDev = 100 %}
+                    {% endif %}
                     <span class="progress-pie-color smaller-nav {% if totalDev == 100 %}smaller-nav-100{% endif %}"
                           data-value="{{ totalDev }}"></span>
                 {% endif %}
@@ -193,6 +198,9 @@
             <label class="tab" for="radio-2">train.tsv
                 {% if not user.admin %}
                     {% set totalTrain = 100 * user.numRecordsAssigned[2] // user.numRecordsAssigned[3] %}
+                    {% if user.numRecordsAssigned[3] == 0 %}
+                        {% set totalTrain = 100 %}
+                    {% endif %}
                     <span class="progress-pie-color smaller-nav {% if totalTrain == 100 %}smaller-nav-100{% endif %}"
                           data-value="{{ totalTrain }}"></span>
                 {% endif %}
@@ -202,6 +210,9 @@
             <label class="tab" for="radio-3">test.tsv
                 {% if not user.admin %}
                     {% set totalTest = 100 * user.numRecordsAssigned[4] // user.numRecordsAssigned[5] %}
+                    {% if user.numRecordsAssigned[5] == 0 %}
+                        {% set totalTest = 100 %}
+                    {% endif %}
                     <span class="progress-pie-color smaller-nav {% if totalTest == 100 %}smaller-nav-100{% endif %}"
                           data-value="{{ totalTest }}"></span>
                 {% endif %}
@@ -212,39 +223,39 @@
             {% if not user.admin %}
                 {% set totalPercent = 100 * (user.numRecordsAssigned[0]+user.numRecordsAssigned[2]+user.numRecordsAssigned[4]
                     )//(user.numRecordsAssigned[1]+user.numRecordsAssigned[3]+user.numRecordsAssigned[5]) %}
-{#                {% if totalPercent < 3 %}#}
-{#                    <div class="me-3">Time to start checking these documents.</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 3 and totalPercent < 20 %}#}
-{#                    <div class="me-3">Good job so far!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 20 and totalPercent < 40 %}#}
-{#                    <div class="me-3">Keep going</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 40 and totalPercent < 49 %}#}
-{#                    <div class="me-3">Almost half done!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent == 50 %}#}
-{#                    <div class="me-3">Half done! Half more to go!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 51 and totalPercent < 60 %}#}
-{#                    <div class="me-3">A bit over half done!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 60 and totalPercent < 80 %}#}
-{#                    <div class="me-3">Keep up the good work!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 80 and totalPercent < 95 %}#}
-{#                    <div class="me-3">Not far from being done now.</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 95 and totalPercent < 98 %}#}
-{#                    <div class="me-3">Almost done! Great job, keep up the good work!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent >= 98 and totalPercent < 100 %}#}
-{#                    <div class="me-3">Just a little bit left! Wohooo!</div>#}
-{#                {% endif %}#}
-{#                {% if totalPercent == 100 %}#}
-{#                    <div class="me-3">Done with all assigned documents!</div>#}
-{#                {% endif %}#}
+                {#                {% if totalPercent < 3 %} #}
+                {#                    <div class="me-3">Time to start checking these documents.</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 3 and totalPercent < 20 %} #}
+                {#                    <div class="me-3">Good job so far!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 20 and totalPercent < 40 %} #}
+                {#                    <div class="me-3">Keep going</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 40 and totalPercent < 49 %} #}
+                {#                    <div class="me-3">Almost half done!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent == 50 %} #}
+                {#                    <div class="me-3">Half done! Half more to go!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 51 and totalPercent < 60 %} #}
+                {#                    <div class="me-3">A bit over half done!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 60 and totalPercent < 80 %} #}
+                {#                    <div class="me-3">Keep up the good work!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 80 and totalPercent < 95 %} #}
+                {#                    <div class="me-3">Not far from being done now.</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 95 and totalPercent < 98 %} #}
+                {#                    <div class="me-3">Almost done! Great job, keep up the good work!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent >= 98 and totalPercent < 100 %} #}
+                {#                    <div class="me-3">Just a little bit left! Wohooo!</div> #}
+                {#                {% endif %} #}
+                {#                {% if totalPercent == 100 %} #}
+                {#                    <div class="me-3">Done with all assigned documents!</div> #}
+                {#                {% endif %} #}
                 <div class="me-3">Stanje pregledovanja (%)</div>
                 <div class="progress-pie-color main-pie"
                      data-value="{{ totalPercent }}"></div>

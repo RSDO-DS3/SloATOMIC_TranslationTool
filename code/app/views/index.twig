@@ -30,6 +30,15 @@
                             <a class="dropdown-item"
                                href="/Record/exportFile?file={{ file }}&uid={{ user._id }}&self=0">
                                 Izvozi celotno datoteko (admin)</a>
+                            <a class="dropdown-item"
+                               href="/Record/exportFile?file={{ file }}&uid={{ user._id }}&self=0&onlyEdited=1&originalValues=0&ang=0">
+                                Izvozi celotno datoteko (admin) (le urejeni, urejene vrednosti)</a>
+                            <a class="dropdown-item"
+                               href="/Record/exportFile?file={{ file }}&uid={{ user._id }}&self=0&onlyEdited=1&originalValues=1&ang=0">
+                                Izvozi celotno datoteko (admin) (le urejeni, ampak originalne SLO vrednosti)</a>
+                            <a class="dropdown-item"
+                               href="/Record/exportFile?file={{ file }}&uid={{ user._id }}&self=0&onlyEdited=1&originalValues=1&ang=1">
+                                Izvozi celotno datoteko (admin) (le urejeni, ampak originalne ANG vrednosti)</a>
                         {% endif %}
                     </div>
                 </div>

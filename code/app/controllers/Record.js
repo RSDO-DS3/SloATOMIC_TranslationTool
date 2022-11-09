@@ -371,7 +371,7 @@ class RecordController {
     static async exportFile(req, res, next) {
         try {
 
-            let {file, uid, self} = req.query; // req.params.file,  ?file=dev.tsv...
+            let {file, uid, self, onlyEdited, originalValues, ang} = req.query; // req.params.file,  ?file=dev.tsv...
             self = self == '1';
 
             if (!self && !res.locals.user?.admin) {
@@ -398,16 +398,37 @@ class RecordController {
             if (self) {
                 filter['assignedUser'] = uid;
             }
+            if (onlyEdited == '1') {
+                filter = {}
+                filter['edited'] = true
+            }
+            console.log(filter)
 
             const findResult = await collection.find(filter).toArray();
             // console.log(findResult)
 
             let tempFile = 'out_temp_file.temp'
 
-            let tsvHeader = 'id\thead\tedge\ttail\r\n';
-            let tsvBody = findResult
-                .map((val) => `${val._id}\t${val.newHead ?? val.head}\t${val.edge}\t${val.newTail ?? val.tail}`)
-                .join('\r\n')
+            let tsvHeader = "";
+            let tsvBody = "";
+            if (originalValues == '1' && ang != '1') {
+                tsvHeader = 'id\thead\tedge\thead\r\n';
+                tsvBody = findResult
+                    .map((val) => `${val._id}\t${val.head}\t${val.edge}\t${val.tail}`)
+                    .join('\r\n')
+            } else if (ang == '1') {
+                tsvHeader = 'id\torighead\tedge\torigtail\r\n';
+                tsvBody = findResult
+                    .map((val) => `${val._id}\t${val.orighead}\t${val.edge}\t${val.origtail}`)
+                    .join('\r\n')
+            }
+            else {
+                tsvHeader = 'id\thead\tedge\ttail\r\n';
+                tsvBody = findResult
+                    .map((val) => `${val._id}\t${val.newHead ?? val.head}\t${val.edge}\t${val.newTail ?? val.tail}`)
+                    .join('\r\n')
+            }
+
             let tsvOut = tsvHeader + tsvBody
 
             fs.writeFileSync(tempFile, tsvOut);
